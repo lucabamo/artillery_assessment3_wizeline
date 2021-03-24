@@ -1,0 +1,50 @@
+config:
+  target: "https://api.todoist.com"
+  processor: "./data/randomData.js"
+  phases:
+    - duration: 3
+      arrivalRate: 1
+      name: "Phase 1"
+    - duration: 6
+      arrivalRate: 10
+      name: "Phase 2"
+    - duration: 8
+      arrivalRate: 15
+      name: "Phase 2"
+  defaults:
+    headers:
+      Authorization: Bearer {{ $processEnvironment.TOKEN }}
+      Content-type: application/json
+scenarios:
+  - name: "Endpoint tasks performance testing"
+    flow:
+      - function: "generateRandomData"
+      #Get active tasks
+      - get: 
+          url: "/rest/v1/tasks"
+      #Create a new task
+      - post:
+          url: "/rest/v1/tasks"
+          json:
+            content: "{{ contentTask }}"
+          capture:
+            json: "$.id"
+            as: "idTask"
+      #Get an active task
+      - get:
+          url: "/rest/v1/tasks/{{ idTask }}"
+      #Update a task
+      - post:
+          url: "/rest/v1/tasks/{{ idTask }}"
+          json:
+            content: "{{ updateMessage }}" 
+      #Close a task
+      - post:
+          url: "/rest/v1/tasks/{{ idTask }}/close"
+      #Reopen a task
+      - post:
+          url: "/rest/v1/tasks/{{ idTask }}/reopen"
+      #Delete a task
+      - delete:
+          url: "/rest/v1/tasks/{{ idTask }}"
+     
