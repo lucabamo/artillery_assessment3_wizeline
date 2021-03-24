@@ -1,10 +1,10 @@
 # artillery_assessment3_wizeline
 Performance testing using artillery
 
-Install npm modules
+Install npm modules:
 
-npm install
+__npm install__
 
 How to run the project:
 
-npm run test
+__npm run test__
